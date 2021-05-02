@@ -120,4 +120,49 @@ public class UserDaoImpl implements UserDao{
 		}
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public Boolean ifUserNameIsTakenAlready(String userName) {
+		try {
+			Query query = sessionFactory.getCurrentSession().createQuery("from User where user_name =:userName");
+			query.setParameter("userName", userName);
+			List<User> users = query.list();
+			System.out.println("List:");
+			System.out.println(users.toString());
+			System.out.println("Size: "+users.size());
+			return users.size() > 0;
+		}catch(Exception e) {
+			e.printStackTrace();
+			
+			String message = "Error From: "+ this.getClass().getSimpleName() +" ["+Thread.currentThread().getStackTrace()[1].getMethodName()+"], Error Class: " + e.getClass().getSimpleName() + ", Message: "+ e.getMessage();
+			return null;
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Boolean ifUserNameIsOnlyTakenByOrItsNew(User user) {
+		try {
+			Query query = sessionFactory.getCurrentSession().createQuery("from User where user_name=:userName");
+			query.setParameter("userName", user.getUserName());
+			List<User> users = query.list();
+			System.out.println("List from updation:");
+			System.out.println(users);
+			System.out.println("Size: "+users.size());
+			
+			// If any user found it should be given user only
+			// If no user found
+			if((users.size() == 1 && users.get(0).getId() == user.getId()) || users.size() == 0) {
+				return true;
+			}
+			
+			return false;
+		}catch(Exception e) {
+			e.printStackTrace();
+			
+			String message = "Error From: "+ this.getClass().getSimpleName() +" ["+Thread.currentThread().getStackTrace()[1].getMethodName()+"], Error Class: " + e.getClass().getSimpleName() + ", Message: "+ e.getMessage();
+			return null;
+		}
+	}
+
 }

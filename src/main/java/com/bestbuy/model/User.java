@@ -9,7 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.validation.constraints.Max;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -39,7 +39,7 @@ public class User implements Serializable{
     private String lastName;
 
 	@NotNull(message = "Please add valid gender.")
-	@Column(length = 10)
+	@Column(length = 10, name = "gender")
 	private String gender;
 		
 	@NotNull(message = "Please add valid email.")
@@ -49,21 +49,24 @@ public class User implements Serializable{
     private String email;
 	
 	@NotNull(message = "Please add valid username.")
-	@Column(length = 30)
-	private String username;
-	
+	@Size(max = 100)
+	@Column(name = "user_name")
+	private String userName;
+
 	@NotNull(message = "Please enter valid password.")
     @Size(max = 128)
+	@Column(name = "password")
     private String password;
 	
     @JsonFormat(pattern="YYYY-mm-dd")
-    @Column(length = 30)
+    @Column(length = 30, name = "date_of_birth")
     private String dateOfBirth;
     
-    @Column(length = 15)
+    @Column(length = 15, name = "phone")
 	private String phone;
     
     @NotNull(message = "Please add valid user role.")
+    @Column(name = "role_id")
     private Integer roleId;
 	
 	@Column(name = "created_at", nullable = false, updatable = false)
@@ -118,12 +121,12 @@ public class User implements Serializable{
 		this.email = email;
 	}
 
-	public String getUsername() {
-		return username;
+	public String getUserName() {
+		return userName;
 	}
 
-	public void setUsername(String username) {
-		this.username = username;
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 
 	public String getPassword() {
@@ -172,5 +175,13 @@ public class User implements Serializable{
 
 	public void setUpdatedAt(Date updatedAt) {
 		this.updatedAt = updatedAt;
+	}
+	
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", gender=" + gender
+				+ ", email=" + email + ", userName=" + userName + ", password=" + password + ", dateOfBirth="
+				+ dateOfBirth + ", phone=" + phone + ", roleId=" + roleId + ", createdAt=" + createdAt + ", updatedAt="
+				+ updatedAt + "]";
 	}
 }

@@ -51,4 +51,14 @@ public class UserServiceImpl implements UserService{
 		return userDao.exists(user);
 	}
 
+	@Override
+	public Boolean ifUserNameIsTakenAlready(String username) {
+		return userDao.ifUserNameIsTakenAlready(username);
+	}
+
+	@Override
+	public Boolean ifUserNameIsOnlyTakenByOrItsNew(User user) {
+		return userDao.ifUserNameIsOnlyTakenByOrItsNew(user);
+	}
+
 }

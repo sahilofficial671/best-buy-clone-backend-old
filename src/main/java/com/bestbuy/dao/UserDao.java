@@ -14,4 +14,6 @@ public interface UserDao {
 	
 	Boolean ifAnyUserHasThisRole(Role role);
 	Boolean exists(User user);
+	Boolean ifUserNameIsTakenAlready(String username);
+	Boolean ifUserNameIsOnlyTakenByOrItsNew(User user);
 }

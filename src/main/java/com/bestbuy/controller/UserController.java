@@ -47,21 +47,33 @@ public class UserController {
 		if(! roleService.exists(user.getRoleId())) {
 			return new ResponseEntity<String>("Role not found.", HttpStatus.NOT_FOUND);
 		}
+		
+		if(userService.ifUserNameIsTakenAlready(user.getUserName())) {
+			return new ResponseEntity<String>("Username is taken already", HttpStatus.BAD_REQUEST);
+		}
+		
 		if(userService.add(user)) {
 			return new ResponseEntity<String>("User Added", HttpStatus.OK);
 		}
-		return new ResponseEntity<String>("Something went wrong!", HttpStatus.NOT_IMPLEMENTED);
+		
+		return new ResponseEntity<String>("Something went wrong! Unable to add user.", HttpStatus.NOT_IMPLEMENTED);
 	}
 	
 	@PutMapping("/user/update")
-	public ResponseEntity<String> updateUser(@RequestBody User user){
+	public ResponseEntity<String> updateUser(@Valid @RequestBody User user){
 		if(! roleService.exists(user.getRoleId())) {
 			return new ResponseEntity<String>("Role not found.", HttpStatus.NOT_FOUND);
 		}
+		
+		if(!userService.ifUserNameIsOnlyTakenByOrItsNew(user)) {
+			return new ResponseEntity<String>("Username is taken already", HttpStatus.BAD_REQUEST);
+		}
+		
 		if(userService.update(user)) {
 			return new ResponseEntity<String>("User Updated", HttpStatus.OK);
 		}
-		return new ResponseEntity<String>("Something went wrong!", HttpStatus.NOT_IMPLEMENTED);
+		
+		return new ResponseEntity<String>("Something went wrong! Unable to update user.", HttpStatus.NOT_IMPLEMENTED);
 	}
 	
 	@DeleteMapping("/user/delete/{id}")
