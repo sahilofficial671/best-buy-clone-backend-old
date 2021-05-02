@@ -2,6 +2,8 @@ package com.bestbuy.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,7 +42,7 @@ public class RoleController {
 	}
 	
 	@PostMapping("/role/submit")
-	public ResponseEntity<String> addRole(@RequestBody Role role){
+	public ResponseEntity<String> addRole(@Valid @RequestBody Role role){
 		if(roleService.add(role)) {
 			return new ResponseEntity<String>("Role Added", HttpStatus.OK);
 		}
@@ -48,7 +50,11 @@ public class RoleController {
 	}
 	
 	@PutMapping("/role/update")
-	public ResponseEntity<String> updateRole(@RequestBody Role role){
+	public ResponseEntity<String> updateRole(@Valid @RequestBody Role role){
+		if(! roleService.exists(role.getId())) {
+			return new ResponseEntity<String>("Role not found.", HttpStatus.NOT_FOUND);
+		}
+		
 		if(roleService.update(role)) {
 			return new ResponseEntity<String>("Role Updated", HttpStatus.OK);
 		}
@@ -57,6 +63,9 @@ public class RoleController {
 	
 	@DeleteMapping("/role/delete/{id}")
 	public ResponseEntity<String> updateRole(@PathVariable("id") Integer id){
+		if(! roleService.exists(id)) {
+			return new ResponseEntity<String>("Role not found.", HttpStatus.NOT_FOUND);
+		}
 		if(userService.ifAnyUserHasThisRole(roleService.getRole(id))) {
 			return new ResponseEntity<String>("Role is assigned to user.", HttpStatus.BAD_REQUEST);
 		}

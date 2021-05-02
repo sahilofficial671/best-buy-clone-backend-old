@@ -1,8 +1,6 @@
- 	package com.bestbuy.dao.impl;
+package com.bestbuy.dao.impl;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -11,22 +9,22 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.bestbuy.dao.RoleDao;
-import com.bestbuy.model.Role;
+import com.bestbuy.dao.ProductDao;
+import com.bestbuy.model.Product;
 
 @Repository
 @Transactional
-public class RoleDaoImpl implements RoleDao{
+public class ProductDaoImpl implements ProductDao{
 	
 	@Autowired
 	private SessionFactory sessionFactory;
 	
 	@Override
-	public List<Role> getRoles() {
+	public List<Product> getProducts() {
 		try {
-			List<Role> roles = new ArrayList<Role>();
-			roles = sessionFactory.getCurrentSession().createQuery("from Role").list();
-			return roles;
+			List<Product> products = new ArrayList<Product>();
+			products = sessionFactory.getCurrentSession().createQuery("from Product").list();
+			return products;
 		}catch(Exception e) {
 			e.printStackTrace();
 			
@@ -36,10 +34,10 @@ public class RoleDaoImpl implements RoleDao{
 	}
 
 	@Override
-	public Role getRole(Integer id) {
+	public Product getProduct(Integer id) {
 		try {
-			 Role role = sessionFactory.getCurrentSession().get(Role.class, id);
-			return role;
+			 Product product = sessionFactory.getCurrentSession().get(Product.class, id);
+			return product;
 		}catch(Exception e) {
 			e.printStackTrace();
 			
@@ -49,9 +47,9 @@ public class RoleDaoImpl implements RoleDao{
 	}
 
 	@Override
-	public Boolean add(Role role) {
+	public Boolean add(Product product) {
 		try {
-			sessionFactory.getCurrentSession().save(role);
+			sessionFactory.getCurrentSession().save(product);
 			return true;
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -62,9 +60,9 @@ public class RoleDaoImpl implements RoleDao{
 	}
 
 	@Override
-	public Boolean update(Role role) {
+	public Boolean update(Product product) {
 		try {
-			sessionFactory.getCurrentSession().update(role);
+			sessionFactory.getCurrentSession().update(product);
 			return true;
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -77,8 +75,8 @@ public class RoleDaoImpl implements RoleDao{
 	@Override
 	public Boolean delete(Integer id) {
 		try {
-			Role role = getRole(id);
-			sessionFactory.getCurrentSession().delete(role);
+			Product product = getProduct(id);
+			sessionFactory.getCurrentSession().delete(product);
 			return true;
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -91,7 +89,7 @@ public class RoleDaoImpl implements RoleDao{
 	@Override
 	public Boolean exists(Integer id) {
 		try {
-			return sessionFactory.getCurrentSession().get(Role.class, id) != null;
+			return sessionFactory.getCurrentSession().get(Product.class, id) != null;
 		}catch(Exception e) {
 			e.printStackTrace();
 			

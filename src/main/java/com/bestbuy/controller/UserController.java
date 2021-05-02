@@ -61,6 +61,12 @@ public class UserController {
 	
 	@PutMapping("/user/update")
 	public ResponseEntity<String> updateUser(@Valid @RequestBody User user){
+		
+		// If User exists
+		if(! userService.exists(user.getId())) {
+			return new ResponseEntity<String>("User not found.", HttpStatus.NOT_FOUND);
+		}
+		
 		if(! roleService.exists(user.getRoleId())) {
 			return new ResponseEntity<String>("Role not found.", HttpStatus.NOT_FOUND);
 		}
@@ -78,6 +84,12 @@ public class UserController {
 	
 	@DeleteMapping("/user/delete/{id}")
 	public ResponseEntity<String> updateUser(@PathVariable("id") Integer id){
+		
+		// If User exists
+		if(! userService.exists(id)) {
+			return new ResponseEntity<String>("User not found.", HttpStatus.NOT_FOUND);
+		}
+		
 		if(userService.delete(id)) {
 			return new ResponseEntity<String>("User Deleted", HttpStatus.OK);
 		}

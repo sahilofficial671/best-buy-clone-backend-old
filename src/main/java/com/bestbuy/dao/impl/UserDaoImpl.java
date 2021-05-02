@@ -106,10 +106,10 @@ public class UserDaoImpl implements UserDao{
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public Boolean exists(User user) {
+	public Boolean exists(Integer id) {
 		try {
 			Query query = sessionFactory.getCurrentSession().createQuery("from User where id=:id");
-			query.setParameter("id", user.getId());
+			query.setParameter("id", id);
 			List<User> users = query.list();
 			return users.size() > 0;
 		}catch(Exception e) {

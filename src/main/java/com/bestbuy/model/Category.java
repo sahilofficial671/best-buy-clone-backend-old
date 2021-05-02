@@ -1,8 +1,6 @@
 package com.bestbuy.model;
 
-import java.io.Serializable;
 import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -18,21 +16,25 @@ import org.springframework.stereotype.Component;
 
 @Entity
 @Component
-@Table(name = "roles")
-public class Role implements Serializable{
+@Table(name = "categories")
+public class Category {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
 	
-	@NotNull
+	@NotNull(message = "Please add valid category name.")
 	@Size(max = 150)
 	private String name;
 	
 	@Size(max = 255)
 	private String description;
 
-	@Column(name = "created_at", nullable = false, updatable = false)
+    @NotNull(message = "Please add select valid category slug.")
+    @Column(name = "slug")
+	private String slug;
+
+    @Column(name = "created_at", nullable = false, updatable = false)
     @CreationTimestamp
     private Date createdAt;
     
@@ -40,9 +42,11 @@ public class Role implements Serializable{
     @UpdateTimestamp
     
     private Date updatedAt;
-	
-	public Role() {
-		
+
+	@Override
+	public String toString() {
+		return "Category [id=" + id + ", name=" + name + ", description=" + description + ", slug=" + slug
+				+ ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + "]";
 	}
 
 	public Integer getId() {
@@ -67,6 +71,14 @@ public class Role implements Serializable{
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public String getSlug() {
+		return slug;
+	}
+
+	public void setSlug(String slug) {
+		this.slug = slug;
 	}
 
 	public Date getCreatedAt() {

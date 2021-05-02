@@ -13,7 +13,7 @@ public interface UserService {
 	Boolean delete(Integer id);
 	
 	Boolean ifAnyUserHasThisRole(Role role);
-	Boolean exists(User user);
+	Boolean exists(Integer id);
 	Boolean ifUserNameIsTakenAlready(String username);
 	Boolean ifUserNameIsOnlyTakenByOrItsNew(User user);
 }
