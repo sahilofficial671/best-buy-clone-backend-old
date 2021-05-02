@@ -1,11 +1,16 @@
 package com.bestbuy.model;
 
 import java.util.Date;
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -14,9 +19,13 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
 @Component
 @Table(name = "categories")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Category {
 
 	@Id
@@ -34,6 +43,13 @@ public class Category {
     @Column(name = "slug")
 	private String slug;
 
+    @JsonIgnore
+    @ManyToMany(targetEntity = Product.class,
+    		fetch = FetchType.LAZY,
+    		mappedBy="categories", 
+    		cascade = {CascadeType.PERSIST, CascadeType.DETACH,CascadeType.MERGE,CascadeType.REFRESH})
+    private List<Product> products;
+    
     @Column(name = "created_at", nullable = false, updatable = false)
     @CreationTimestamp
     private Date createdAt;
@@ -42,12 +58,8 @@ public class Category {
     @UpdateTimestamp
     
     private Date updatedAt;
-
-	@Override
-	public String toString() {
-		return "Category [id=" + id + ", name=" + name + ", description=" + description + ", slug=" + slug
-				+ ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + "]";
-	}
+	
+	public Category() {}
 
 	public Integer getId() {
 		return id;
@@ -81,6 +93,14 @@ public class Category {
 		this.slug = slug;
 	}
 
+	public List<Product> getProducts() {
+		return products;
+	}
+
+	public void setProducts(List<Product> products) {
+		this.products = products;
+	}
+
 	public Date getCreatedAt() {
 		return createdAt;
 	}
@@ -93,7 +113,15 @@ public class Category {
 		return updatedAt;
 	}
 
+	@Override
+	public String toString() {
+		return "Category [id=" + id + ", name=" + name + ", description=" + description + ", slug=" + slug
+				+ ", products=" + products + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + "]";
+	}
+
 	public void setUpdatedAt(Date updatedAt) {
 		this.updatedAt = updatedAt;
 	}
+	
+	
 }

@@ -63,7 +63,9 @@ public class CategoryController {
 		if(! categoryService.exists(id)) {
 			return new ResponseEntity<String>("Category not found.", HttpStatus.NOT_FOUND);
 		}
-		if(categoryService.getProducts(id).size() > 0) {
+		
+		Category category = categoryService.getCategory(id);
+		if(category.getProducts().size() > 0) {
 			return new ResponseEntity<String>("Category is assigned to products.", HttpStatus.BAD_REQUEST);
 		}
 		

@@ -5,11 +5,12 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -18,6 +19,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.validator.constraints.Email;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
@@ -68,6 +70,10 @@ public class User implements Serializable{
     @NotNull(message = "Please add valid user role.")
     @Column(name = "role_id")
     private Integer roleId;
+    
+//	@OneToMany(mappedBy="user", fetch = FetchType.LAZY)
+//	@JsonBackReference
+//    private Order orders;
 	
 	@Column(name = "created_at", nullable = false, updatable = false)
     @CreationTimestamp

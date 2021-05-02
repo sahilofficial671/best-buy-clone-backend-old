@@ -1,12 +1,18 @@
 package com.bestbuy.model;
 
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -15,9 +21,13 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
 @Component
 @Table(name = "products")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Product {
 
 	@Id
@@ -43,13 +53,26 @@ public class Product {
 	@Column(name = "special_price")
 	private Double specialPrice;
 	
-    @NotNull(message = "Please add select valid product category.")
-    @Column(name = "category_id")
-	private Integer categoryId;
+    @NotNull(message = "Please add valid product categories.")
+    @ManyToMany(targetEntity = Category.class, 
+			cascade = {CascadeType.PERSIST, CascadeType.DETACH,CascadeType.MERGE,CascadeType.REFRESH}, 
+			fetch = FetchType.LAZY)
+    @JoinTable(
+			  name = "product_categories", 
+			  joinColumns = @JoinColumn(name = "product_id", referencedColumnName="id"), 
+			  inverseJoinColumns = @JoinColumn(name = "category_id", referencedColumnName="id"))
+	private List<Category> categories;
 
     @NotNull(message = "Please add select valid product slug.")
     @Column(name = "slug")
 	private String slug;
+    
+    @JsonIgnore
+    @ManyToMany(targetEntity = Order.class,
+    		fetch = FetchType.LAZY,
+    		mappedBy="products", 
+    		cascade = CascadeType.ALL)
+    private List<Order> orders;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     @CreationTimestamp
@@ -110,12 +133,12 @@ public class Product {
 		this.specialPrice = specialPrice;
 	}
 
-	public Integer getCategoryId() {
-		return categoryId;
+	public List<Category> getCategories() {
+		return categories;
 	}
 
-	public void setCategoryId(Integer categoryId) {
-		this.categoryId = categoryId;
+	public void setCategories(List<Category> categories) {
+		this.categories = categories;
 	}
 
 	public String getSlug() {
@@ -124,6 +147,14 @@ public class Product {
 
 	public void setSlug(String slug) {
 		this.slug = slug;
+	}
+
+	public List<Order> getOrders() {
+		return orders;
+	}
+
+	public void setOrders(List<Order> orders) {
+		this.orders = orders;
 	}
 
 	public Date getCreatedAt() {
@@ -145,8 +176,9 @@ public class Product {
 	@Override
 	public String toString() {
 		return "Product [id=" + id + ", name=" + name + ", description=" + description + ", quantity=" + quantity
-				+ ", price=" + price + ", specialPrice=" + specialPrice + ", categoryId=" + categoryId + ", slug="
-				+ slug + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + "]";
+				+ ", price=" + price + ", specialPrice=" + specialPrice + ", categoryId=" + categories + ", slug="
+				+ slug + ", orders=" + orders + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + "]";
 	}
+	
 	
 }

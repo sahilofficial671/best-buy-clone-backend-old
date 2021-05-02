@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bestbuy.model.Category;
 import com.bestbuy.model.Product;
 import com.bestbuy.service.CategoryService;
 import com.bestbuy.service.ProductService;
@@ -44,8 +45,11 @@ public class ProductController {
 	
 	@PostMapping("/product/submit")
 	public ResponseEntity<String> addProduct(@Valid @RequestBody Product product){
-		if(! categoryService.exists(product.getCategoryId())) {
-			return new ResponseEntity<String>("Category not found.", HttpStatus.NOT_FOUND);
+		for(Category category : product.getCategories()) {
+			// If category id
+			if(category.getId() != null && !categoryService.exists(category.getId())) {
+				return new ResponseEntity<String>("Category not found.", HttpStatus.NOT_FOUND);
+			}
 		}
 		if(productService.add(product)) {
 			return new ResponseEntity<String>("Product Added.", HttpStatus.OK);
@@ -59,8 +63,11 @@ public class ProductController {
 			return new ResponseEntity<String>("Product not found.", HttpStatus.NOT_FOUND);
 		}
 		
-		if(! categoryService.exists(product.getCategoryId())) {
-			return new ResponseEntity<String>("Category not found.", HttpStatus.NOT_FOUND);
+		for(Category category : product.getCategories()) {
+			// If category id
+			if(category.getId() != null && !categoryService.exists(category.getId())) {
+				return new ResponseEntity<String>("Category not found.", HttpStatus.NOT_FOUND);
+			}
 		}
 		
 		if(productService.update(product)) {
