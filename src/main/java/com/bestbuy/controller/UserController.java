@@ -2,6 +2,8 @@ package com.bestbuy.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bestbuy.model.User;
+import com.bestbuy.service.RoleService;
 import com.bestbuy.service.UserService;
 
 @RestController
@@ -23,6 +26,9 @@ public class UserController {
 	
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private RoleService roleService;
 	
 	@GetMapping("/users")
 	public ResponseEntity<List<User>> getUsers(){
@@ -37,7 +43,10 @@ public class UserController {
 	}
 	
 	@PostMapping("/user/submit")
-	public ResponseEntity<String> addUser(@RequestBody User user){
+	public ResponseEntity<String> addUser(@Valid @RequestBody User user){
+		if(! roleService.exists(user.getRoleId())) {
+			return new ResponseEntity<String>("Role not found.", HttpStatus.NOT_FOUND);
+		}
 		if(userService.add(user)) {
 			return new ResponseEntity<String>("User Added", HttpStatus.OK);
 		}
@@ -46,6 +55,9 @@ public class UserController {
 	
 	@PutMapping("/user/update")
 	public ResponseEntity<String> updateUser(@RequestBody User user){
+		if(! roleService.exists(user.getRoleId())) {
+			return new ResponseEntity<String>("Role not found.", HttpStatus.NOT_FOUND);
+		}
 		if(userService.update(user)) {
 			return new ResponseEntity<String>("User Updated", HttpStatus.OK);
 		}

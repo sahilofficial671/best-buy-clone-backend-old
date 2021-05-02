@@ -1,32 +1,32 @@
-package com.bestbuy.dao.impl;
+ 	package com.bestbuy.dao.impl;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.transaction.Transactional;
 
-import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.bestbuy.dao.UserDao;
+import com.bestbuy.dao.RoleDao;
 import com.bestbuy.model.Role;
-import com.bestbuy.model.User;
 
 @Repository
 @Transactional
-public class UserDaoImpl implements UserDao{
+public class RoleDaoImpl implements RoleDao{
 	
 	@Autowired
 	private SessionFactory sessionFactory;
 	
 	@Override
-	public List<User> getUsers() {
+	public List<Role> getRoles() {
 		try {
-			List<User> users = new ArrayList<User>();
-			users = sessionFactory.getCurrentSession().createQuery("from User").list();
-			return users;
+			List<Role> roles = new ArrayList<Role>();
+			roles = sessionFactory.getCurrentSession().createQuery("from Role").list();
+			return roles;
 		}catch(Exception e) {
 			e.printStackTrace();
 			
@@ -36,10 +36,10 @@ public class UserDaoImpl implements UserDao{
 	}
 
 	@Override
-	public User getUser(Integer id) {
+	public Role getRole(Integer id) {
 		try {
-			 User user = sessionFactory.getCurrentSession().get(User.class, id);
-			return user;
+			 Role role = sessionFactory.getCurrentSession().get(Role.class, id);
+			return role;
 		}catch(Exception e) {
 			e.printStackTrace();
 			
@@ -49,9 +49,11 @@ public class UserDaoImpl implements UserDao{
 	}
 
 	@Override
-	public Boolean add(User user) {
+	public Boolean add(Role role) {
 		try {
-			sessionFactory.getCurrentSession().save(user);
+			role.setCreatedAt(new Date());
+			role.setUpdatedAt(new Date());
+			sessionFactory.getCurrentSession().save(role);
 			return true;
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -62,9 +64,10 @@ public class UserDaoImpl implements UserDao{
 	}
 
 	@Override
-	public Boolean update(User user) {
+	public Boolean update(Role role) {
 		try {
-			sessionFactory.getCurrentSession().update(user);
+			role.setUpdatedAt(new Date());
+			sessionFactory.getCurrentSession().update(role);
 			return true;
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -77,8 +80,8 @@ public class UserDaoImpl implements UserDao{
 	@Override
 	public Boolean delete(Integer id) {
 		try {
-			User user = getUser(id);
-			sessionFactory.getCurrentSession().delete(user);
+			Role role = getRole(id);
+			sessionFactory.getCurrentSession().delete(role);
 			return true;
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -87,31 +90,11 @@ public class UserDaoImpl implements UserDao{
 			return null;
 		}
 	}
-	
-	@SuppressWarnings("unchecked")
+
 	@Override
-	public Boolean ifAnyUserHasThisRole(Role role) {
+	public Boolean exists(Integer id) {
 		try {
-			Query query = sessionFactory.getCurrentSession().createQuery("from User where roleId=:roleId");
-			query.setParameter("roleId", role.getId());
-			List<User> users = query.list();
-			return users.size() > 0;
-		}catch(Exception e) {
-			e.printStackTrace();
-			
-			String message = "Error From: "+ this.getClass().getSimpleName() +" ["+Thread.currentThread().getStackTrace()[1].getMethodName()+"], Error Class: " + e.getClass().getSimpleName() + ", Message: "+ e.getMessage();
-			return null;
-		}
-	}
-	
-	@SuppressWarnings("unchecked")
-	@Override
-	public Boolean exists(User user) {
-		try {
-			Query query = sessionFactory.getCurrentSession().createQuery("from User where id=:id");
-			query.setParameter("id", user.getId());
-			List<User> users = query.list();
-			return users.size() > 0;
+			return sessionFactory.getCurrentSession().get(Role.class, id) != null;
 		}catch(Exception e) {
 			e.printStackTrace();
 			

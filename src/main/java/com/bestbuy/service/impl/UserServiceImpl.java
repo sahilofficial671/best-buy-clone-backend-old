@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bestbuy.dao.UserDao;
+import com.bestbuy.model.Role;
 import com.bestbuy.model.User;
 import com.bestbuy.service.UserService;
 
@@ -38,6 +39,16 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public Boolean delete(Integer id) {
 		return userDao.delete(id);
+	}
+
+	@Override
+	public Boolean ifAnyUserHasThisRole(Role role) {
+		return userDao.ifAnyUserHasThisRole(role);
+	}
+
+	@Override
+	public Boolean exists(User user) {
+		return userDao.exists(user);
 	}
 
 }
